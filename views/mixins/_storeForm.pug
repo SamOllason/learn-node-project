@@ -1,0 +1,22 @@
+mixin storeForm(store = {})
+    // if we are rendering this template for the add screen it will fall back to
+    // the empty store
+    // action tells browser where to send data
+    // method tells method how to send method
+    form(action=`/add/${store._id || ''}` method="POST" class="card")
+        // names here have to match what is in schema
+        // slug auto generated
+        abel(for="name") Name
+        // if we are editing a store this will show the name of the store
+        input(type="text" name="name" value=store.name)
+        label(for="description") Description
+        textarea(name="description")= store.description
+        // Run some JS to loop over array of tags
+        - const choices = [ 'Wifi', 'Open Late', 'Family Friendly', 'Vegetarian', 'Licensed' ]
+        - const tags = store.tags || []
+        ul.tags
+            each choice in choices
+                .tag.tag__choice
+                    input(type="checkbox" id=choice, value=choice, name="tags" checked=(tags.includes(choice)))
+                    label(for=choice) #{choice}
+        input(type="submit" value="Save →" class="button")
