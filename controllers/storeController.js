@@ -9,7 +9,6 @@ exports.homePage = (req, res) => {
     req.flash('error', `Something happened`);
     req.flash('info', 'something happened');
     res.render('index');
-
 };
 
 exports.addStore = (req, res) => {

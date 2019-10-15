@@ -11,6 +11,19 @@ mixin storeForm(store = {})
         input(type="text" name="name" value=store.name)
         label(for="description") Description
         textarea(name="description")= store.description
+        // address, lng and lat
+        label(for="address") Address
+        // see how in app.js bodyParser with extended: true allows us
+        // to use properties of nested data this. Means dont
+        // have to do any extra heavy lifting on client or server
+        input(type="text" id="address" name="location[address]" value=(store.location && store.location.address))
+        label(for="lng") Address Lng
+        // required attribute adds client-side validation to make sure that people put this in
+        input(type="text" id="lng" name="location[coordinates][0]" value=(store.location && store.location.coordinates[0]) required)
+        label(for="lng") Address Lat
+        input(type="text" id="lat" name="location[coordinates][1]" value=(store.location && store.location.coordinates[1]) required)
+        //pre= h.dump(store)
+
         // Run some JS to loop over array of tags
         - const choices = [ 'Wifi', 'Open Late', 'Family Friendly', 'Vegetarian', 'Licensed' ]
         - const tags = store.tags || []
