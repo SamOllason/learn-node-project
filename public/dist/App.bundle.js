@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -74,10 +74,50 @@
 
 
 Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function autocomplete(input, latInput, lngInput) {
+    console.log(input, latInput, lngInput);
+
+    if (!input) return; // skip if no input on page
+
+    // Dropdown comes with Google maps API
+    // Even just with the one line we get autocomplete functionality in the UI
+    var dropdown = new google.maps.places.Autocomplete(input);
+
+    dropdown.addListener('place_changed', function () {
+        var place = dropdown.getPlace();
+        console.log(place);
+
+        latInput.value = place.geometry.location.lat();
+        lngInput.value = place.geometry.location.lng();
+    });
+
+    // if someone hits enter on address field do not submit form
+    input.on('keydown', function (e) {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+        }
+    });
+}
+
+// Don't have default module importing in Node yet
+// but do in Webpack which handles all our client-side JS.
+exports.default = autocomplete;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 // based on https://gist.github.com/paulirish/12fb951a8b893a454b32
 
+// Makes our code feel a bit more like jQuery
 var $ = document.querySelector.bind(document);
 var $$ = document.querySelectorAll.bind(document);
 
@@ -97,21 +137,31 @@ exports.$ = $;
 exports.$$ = $$;
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(1);
+__webpack_require__(2);
 
-var _bling = __webpack_require__(0);
+var _bling = __webpack_require__(1);
+
+var _autocomplete = __webpack_require__(0);
+
+var _autocomplete2 = _interopRequireDefault(_autocomplete);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// looks like jQUery but blking makes the syntax easier here.
+(0, _autocomplete2.default)((0, _bling.$)('#address'), (0, _bling.$)('#lat'), (0, _bling.$)('#lng'));
+// This is the entry point for all client-side JS
 
 /***/ })
 /******/ ]);
