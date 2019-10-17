@@ -1,6 +1,8 @@
-## What is this?
+## Overview
+Restaurant locator and reviewing site called "Now that's delicious!".
+Built using Node, Express, MongoDB and Pug.
 
-Just you wait folks!
+Homework from Wes Bos' fantastic [Learn Node](https://learnnode.com/0) course.
 
 ## Sample Data
 
