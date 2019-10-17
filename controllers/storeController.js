@@ -3,7 +3,25 @@ const mongoose = require('mongoose');
 // mongoose makes sure that each of our
 // models are a singleton, so we can use the reference
 // that hangs off mongoose here
-const Store = mongoose.model('Store');
+const Store  = mongoose.model('Store');
+const multer = require('multer');
+
+const multerOptions = {
+    // We don't want to store original photo.
+    // Want to write into memory, resize image and save resized one.
+    storage: multer.memoryStorage(),
+    fileFilter(req, file, next) {
+        // mimetype is used to determine type of image, can't rely on extension!
+        const isPhoto = file.mimetype.startsWith('image/');
+        if(isPhoto){
+            // 'null' indicates to next middleware that all ok
+            // and second param is what we want to pass
+            next(null, true);
+        } else {
+            next({message: 'That filetype isn\'t allowed!'}, false);
+        }
+    }
+};
 
 exports.homePage = (req, res) => {
     req.flash('error', `Something happened`);
@@ -16,6 +34,8 @@ exports.addStore = (req, res) => {
     // keeps code DRY
     res.render('editStore', { title: 'Add Store' });
 };
+
+exports.upload = multer(multerOptions).single('photo');
 
 exports.createStore = async (req, res) => {
     // Because we are using a strict schema,
