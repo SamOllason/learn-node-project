@@ -10,4 +10,5 @@ mixin storeCard(store = {})
             h2.title
                 a(href=`/store/${store.slug}`) #{store.name}
         .store__details
+            // avoid long description showing in card
             p #{store.description.split(' ').slice(0,25).join(' ')}

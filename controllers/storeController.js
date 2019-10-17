@@ -5,7 +5,8 @@ const mongoose = require('mongoose');
 // that hangs off mongoose here
 const Store  = mongoose.model('Store');
 const multer = require('multer');
-
+const jimp = require('jimp');
+const uuid = require('uuid'); // unique ids for each image uploaded
 const multerOptions = {
     // We don't want to store original photo.
     // Want to write into memory, resize image and save resized one.
@@ -36,6 +37,28 @@ exports.addStore = (req, res) => {
 };
 
 exports.upload = multer(multerOptions).single('photo');
+
+exports.resize = async (req, res, next) => {
+    // check if there is no new file to resize
+    if(!req.file){
+        next(); // skip to next middleware
+        return;
+    }
+    const extension = req.file.mimetype.split('/')[1];
+
+    // Adding to request body means it will get saved to db
+    req.body.photo = `${uuid.v4()}.${extension}`;
+
+    // now resize
+    // either pass a file path or buffer
+    const photo = await jimp.read(req.file.buffer);
+
+    await photo.resize(800, jimp.AUTO);
+    await photo.write(`./public/uploads/${req.body.photo}`);
+
+    // now have written photo to filesystem, go to next middleware
+    next();
+};
 
 exports.createStore = async (req, res) => {
     // Because we are using a strict schema,
@@ -77,7 +100,6 @@ exports.editStore = async (req, res) => {
     // 1. Find the store given the ID
     // see the ID of the Store on page
     // res.json(req.params.id)
-    console.log('edit store');
 
     const store = await Store.findOne({ _id: req.params.id});
     // res.json(store);

@@ -39,7 +39,8 @@ const storeSchema = new mongoose.Schema({
             type: String,
             required: 'You must supply an address!'
         }
-    }
+    },
+    photo: String, // name of photo stored on disc on server
 });
 
 // Want to auto-generate the slug and hav this saved into our model
