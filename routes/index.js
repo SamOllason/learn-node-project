@@ -6,6 +6,8 @@ const { catchErrors } = require('../handlers/errorHandlers');
 
 router.get('/', catchErrors(storeController.getStores));
 router.get('/stores', catchErrors(storeController.getStores));
+router.get('/store/:slug', catchErrors(storeController.getStoreBySlug));
+
 router.get('/add', storeController.addStore);
 
 // Catch errors here so that we don't have to do inside each individual route.
@@ -16,11 +18,13 @@ router.post('/add',
     catchErrors(storeController.resize),
     catchErrors(storeController.createStore)
 );
+
 router.post('/add/:id',
     storeController.upload,
     catchErrors(storeController.resize),
     catchErrors(storeController.updateStore)
 );
+
 
 // Use a wildcard here to match all URLs of this pattern.
 // When we get the request object we will have access to the id as a variable

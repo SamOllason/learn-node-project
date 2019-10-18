@@ -96,6 +96,25 @@ exports.getStores = async (req, res) => {
     res.render('stores', { title: 'Stores', stores: stores});
 };
 
+exports.getStoreBySlug = async (req, res) => {
+    // 1. Query the database for a single store
+
+    const store = await Store.findOne({ slug: req.params.slug});
+    // console.log({store});
+
+    // This is all we need to do to render a 404 page because of the error-handling middleware
+    if(!store) {
+        next();
+        return;
+    }
+
+    // res.json(store);
+
+    // Render a teomplate
+    res.render('store', { title: 'Stores', store: store});
+};
+
+
 exports.editStore = async (req, res) => {
     // 1. Find the store given the ID
     // see the ID of the Store on page

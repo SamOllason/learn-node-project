@@ -159,7 +159,7 @@ var _autocomplete2 = _interopRequireDefault(_autocomplete);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// looks like jQUery but blking makes the syntax easier here.
+// Looks like jQuery but isn't. Bling makes the syntax easier here.
 (0, _autocomplete2.default)((0, _bling.$)('#address'), (0, _bling.$)('#lat'), (0, _bling.$)('#lng'));
 // This is the entry point for all client-side JS
 
