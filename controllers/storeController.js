@@ -73,7 +73,7 @@ exports.createStore = async (req, res) => {
     // Fire off connection to mongodb to save data and get back to us.
     // take care here as want to make sure we hear back about success/failure
     // of saving to database before redirecting user
-    // Instead of using callback
+    // instead of using callback.
     await store.save();
 
     // We included the flash middleware in app.js.
@@ -83,7 +83,7 @@ exports.createStore = async (req, res) => {
     req.flash('success', `Successfully Created ${store.name}. Care to leave a review?`);
 
     // Now store is saved redirect user to the store that has been created
-    res.redirect(`/${store.slug}`);
+    res.redirect(`/store/${store.slug}`);
 };
 
 exports.getStores = async (req, res) => {

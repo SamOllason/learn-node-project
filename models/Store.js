@@ -44,7 +44,7 @@ const storeSchema = new mongoose.Schema({
 });
 
 // Want to auto-generate the slug and hav this saved into our model
-storeSchema.pre('save', function(next){
+storeSchema.pre('save', async function(next){
     // Use a standard function here as want 'this' to be dynamically scoped
     // to be the model that in question
 
@@ -54,10 +54,24 @@ storeSchema.pre('save', function(next){
     }
     this.slug = slug(this.name);
 
+    // Find stores with the same name: name, name-1, name-2, ...
+    // Use a Regex to do fuzzy matching and match
+    // all that match pattern name, name-99
+
+    const slugRegEx = new RegExp(`^(${this.slug})((-[0-9]*$)?)$`, 'i');
+
+    // Need to find a model within a models function.
+    // We haven't created the store yet, so need to use this.constructor,
+    // which will be equal to the store by the time it runs.
+    const storesWithSlug = await this.constructor.find({slug: slugRegEx});
+
+    if(storesWithSlug.length) {
+        // overwrite slug with unique name
+        this.slug = `${this.slug}-${storesWithSlug.length + 1}`;
+    }
+
     // Now pre-save has done, can move to next step
     next();
-
-    // TODO: make more resilient so slugs are unique...
 });
 
 
