@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const storeController = require('../controllers/storeController');
+const userController = require('../controllers/userController');
 // Import one method we need using destructing
 const { catchErrors } = require('../handlers/errorHandlers');
 
@@ -29,5 +30,12 @@ router.post('/add/:id',
 // Use a wildcard here to match all URLs of this pattern.
 // When we get the request object we will have access to the id as a variable
 router.get('/stores/:id/edit', catchErrors(storeController.editStore));
+
+router.get('/tags', catchErrors(storeController.getStoresByTag));
+router.get('/tags/:tag', catchErrors(storeController.getStoresByTag));
+
+router.get('/login', userController.loginForm);
+router.get('/register', userController.registerForm);
+
 
 module.exports = router;

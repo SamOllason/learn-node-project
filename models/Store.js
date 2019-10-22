@@ -74,7 +74,23 @@ storeSchema.pre('save', async function(next){
     next();
 });
 
+// Adding a static method to our Store model
+storeSchema.statics.getTagsList = function() {
+    // Use classic function as need this to by dynamically scoped
+    // array is the pipeline, and we put operators in there
 
+    // Before we group by we need to unwind. Stores may have multiple tags
+    // and we need to have an instance of the store for each tag,.
+    return this.aggregate([
+        { $unwind: '$tags'},
+        // Group each instance by tags and create a new field called count
+        // for each instance we'sunm' by 1.
+        { $group: { _id: '$tags', count: { $sum: 1}}},
+        // Sort by count descending
+        { $sort: { count: -1}}
+    ])
+
+};
 // If the main thing in a file is going to be exporting
 // put it on module name.
 // A question of whether importing a function or an object with loads

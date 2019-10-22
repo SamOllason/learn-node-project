@@ -129,7 +129,7 @@ exports.editStore = async (req, res) => {
     res.render('editStore', { title: `Edit ${store.name}`, store: store });
 };
 
-exports.updateStore = async (req, res) =>{
+exports.updateStore = async (req, res) => {
     // Set the location data to be a point
     req.body.location.type = 'Point';
     // Find and update the store, make sure to use validators
@@ -146,4 +146,34 @@ exports.updateStore = async (req, res) =>{
 
     // Redirect user back to the edit screen they were just on
     res.redirect(`/stores/${store._id}/edit`);
+};
+
+exports.getStoresByTag = async (req, res) => {
+    const tag  = req.params.tag;
+
+    // if there is no tag then fallback to the second query
+    // which will return every store
+    const tagQuery = tag || {$exists: true};
+
+    // res.json(tags);
+
+    // Do not use await twice and make code synchronous,
+    // instead use promises to get both ajax request fired off at the same time.
+
+    // Get all tags
+    // const tags =  await Store.getTagsList();
+    const tagsPromise = Store.getTagsList();
+
+    // Get all stores with a specific tag (given by the route)
+
+    const storesPromise = Store.find({tags: tagQuery});
+
+    // await for multiple promises at the same time
+    // destruct the data into two variables
+    const [ tags, stores] = await Promise.all([tagsPromise, storesPromise]);
+
+    // res.json(result);
+
+    // want to make the tag corresponding highlighted so pass to template
+    res.render('tags', {tags, tag, stores, title: 'Tags'});
 };
