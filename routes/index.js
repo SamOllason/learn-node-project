@@ -10,7 +10,10 @@ router.get('/', catchErrors(storeController.getStores));
 router.get('/stores', catchErrors(storeController.getStores));
 router.get('/store/:slug', catchErrors(storeController.getStoreBySlug));
 
-router.get('/add', storeController.addStore);
+router.get('/add',
+    authController.isLoggedIn, //check user is logged in before showing them the addStore page
+    storeController.addStore
+);
 
 // Catch errors here so that we don't have to do inside each individual route.
 // This will let the error happen inside the route, catch it inside the HOF
@@ -27,7 +30,6 @@ router.post('/add/:id',
     catchErrors(storeController.updateStore)
 );
 
-
 // Use a wildcard here to match all URLs of this pattern.
 // When we get the request object we will have access to the id as a variable
 router.get('/stores/:id/edit', catchErrors(storeController.editStore));
@@ -36,6 +38,7 @@ router.get('/tags', catchErrors(storeController.getStoresByTag));
 router.get('/tags/:tag', catchErrors(storeController.getStoresByTag));
 
 router.get('/login', userController.loginForm);
+router.post('/login', authController.login);
 
 router.get('/register', userController.registerForm);
 
@@ -50,5 +53,6 @@ router.post('/register',
     authController.login
 );
 
+router.get('/logout', authController.logout);
 
 module.exports = router;

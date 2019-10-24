@@ -32,8 +32,17 @@ const userSchema = new Schema({
         trim: true
     }
 
-    // want to store a hash of their password in database...
 
+    // want to store a hash of their password in database, do this with passportls elsewhere in a handler
+
+});
+
+// virtual methods are for calculating things on the fly.
+// this image isn't stored in the database but is virtual
+userSchema.virtual('gravatar').get(function(){
+    // takes use email address and hash it so that we don't leak in the image source
+    const hash = md5(this.email);
+    return `https://gravatar.com/avatar/${hash}?s=200`;
 });
 
 // Takes care of adding additional authentication fields to schema
