@@ -21,10 +21,10 @@ const userSchema = new Schema({
 
         // There will be client-side checks, but good practice to have this here
         // in case someone maliciously turns the checks off or someone in old browser
-        validate: [validator.isEmail, 'Invalid Email Address' ],
+        validate: [ validator.isEmail, 'Invalid Email Address' ],
 
         // In case someone manages to bypass client-side validation (see above)
-        require: 'Please supply an email address',
+        required: 'Please supply an email address',
     },
     name: {
         type: String,
@@ -32,7 +32,7 @@ const userSchema = new Schema({
         trim: true
     }
 
-    // want to store a hash of their password in database
+    // want to store a hash of their password in database...
 
 });
 

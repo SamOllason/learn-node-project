@@ -6,10 +6,11 @@ if (major < 7 || (major === 7 && minor <= 5)) {
   console.log('🛑 🌮 🐶 💪 💩\nHey You! \n\t ya you! \n\t\tBuster! \n\tYou\'re on an older version of node that doesn\'t support the latest and greatest things we are learning (Async + Await)! Please go to nodejs.org and download version 7.6 or greater. 👌\n ');
   process.exit();
 }
-//
+
+
 // import environmental variables from our variables.env file
 require('dotenv').config({ path: 'variables.env' });
-//
+
 // Connect to our Database and handle any bad connections
 mongoose.connect(process.env.DATABASE)
     .then(() => console.log('Initial mongoose connection made!'))
@@ -26,6 +27,7 @@ mongoose.connection.on('error', (err) => {
 // READY?! Let's go!
 // mongoose instantiates these as singletons
 require('./models/Store');
+require('./models/User');
 
 // Start our app!
 const app = require('./app');
