@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const User = mongoose.model('User'); // can do this as its been included in start.js
 const promisify = require('es6-promisify');
 
-
 exports.loginForm = (req, res) => {
     res.render('login', { title: 'Login'});
 };
@@ -57,5 +56,32 @@ exports.register = async (req, res, next) => {
     const registerWithPromise = promisify(User.register, User);
     await registerWithPromise(user, req.body.password);
     // res.send('it works!');
-    next(); // pass to authController.login
+    next();
+};
+
+exports.account = async (req, res) => {
+    res.render('account', { title: 'Edit your account'});
+};
+
+exports.updateAccount = async(req, res) => {
+    // Take data user has sent update
+    // certain variables
+    const updates = {
+        name: req.body.name,
+        email: req.body.email
+    };
+
+    // Find specific user and update properties in the database
+    const user = await User.findOneAndUpdate(
+        { _id: req.user._id}, // query. Take this from req as do not want user to supply --> could be maliciously misused
+        { $set: updates} , // updates
+        { new: true, runValidators: true, context: 'query' } // options
+    );
+
+    // res.json(user);
+
+    // sends the user back to the page they were just on
+    req.flash('success', 'Updated the profile');
+    res.redirect('back');
+
 };

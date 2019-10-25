@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    .inner
+        h2 Edit Your Account
+        // user is available to use as locals because of setup in app.js
+        // pre= h.dump(user)
+        form(action="/account" method="POST")
+            label(for="name") Name
+            // set up in app.js makes user available to us
+            input(type="text" name="name" value=user.name)
+            label(for="email") Email Address
+            input(type="email" name="email" value=user.email required)
+            input.button(type="submit" value="Update My Account")
+
+

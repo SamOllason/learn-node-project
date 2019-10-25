@@ -30,10 +30,12 @@ const userSchema = new Schema({
         type: String,
         required: 'Please supply a name',
         trim: true
-    }
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date
 
-
-    // want to store a hash of their password in database, do this with passportls elsewhere in a handler
+    // want to store a hash of their password in database,
+    // do this with PassportJS elsewhere in a handler
 
 });
 
