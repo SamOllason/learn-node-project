@@ -61,6 +61,11 @@ exports.resize = async (req, res, next) => {
 };
 
 exports.createStore = async (req, res) => {
+
+    // Used to link a store to an author.
+    // Use id of the logged in user.
+    req.body.author = req.user._id;
+
     // Because we are using a strict schema,
     // the store will only pick up the fields we are interested in
     // and ignore other fields on the body.
@@ -97,10 +102,10 @@ exports.getStores = async (req, res) => {
 };
 
 exports.getStoreBySlug = async (req, res) => {
-    // 1. Query the database for a single store
-
-    const store = await Store.findOne({ slug: req.params.slug});
-    // console.log({store});
+    // 1. Query the database for a single store.
+    // Populating this field means replacing it with the document
+    // associated with the author _id.
+    const store = await Store.findOne({ slug: req.params.slug}).populate('author');
 
     // This is all we need to do to render a 404 page because of the error-handling middleware
     if(!store) {
@@ -114,6 +119,13 @@ exports.getStoreBySlug = async (req, res) => {
     res.render('store', { title: 'Stores', store: store});
 };
 
+const confirmOwner = (store, user) => {
+    // store.author is of type object id,
+    // have to use equals to compare to a string
+    if(!store.author.equals(user._id)) {
+        throw Error('You must own a store in order to edit it!');
+    }
+};
 
 exports.editStore = async (req, res) => {
     // 1. Find the store given the ID
@@ -123,8 +135,9 @@ exports.editStore = async (req, res) => {
     const store = await Store.findOne({ _id: req.params.id});
     // res.json(store);
 
-    // 2. Confirm they are the owner of the store
-    // TODO
+    // 2. Confirm they are the owner of the store.
+    // If they are not the owner error-handling middleware will catch it
+    confirmOwner(store, req.user);
     // 3. Render out the edit form so the user can update their store
     res.render('editStore', { title: `Edit ${store.name}`, store: store });
 };

@@ -41,6 +41,10 @@ const storeSchema = new mongoose.Schema({
         }
     },
     photo: String, // name of photo stored on disc on server
+    author: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+    }
 });
 
 // Want to auto-generate the slug and hav this saved into our model
