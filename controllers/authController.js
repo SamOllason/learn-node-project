@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const promisify = require('es6-promisify');
-
+const mail = require('../handlers/mail');
 // A strategy with passport is way of sending passport data (username + password) with passport to check if the user
 // to someone to check if a user is logged in or not.
 // A strategy is something that will interface with some kind of service and check that you are allowed to access
@@ -60,7 +60,14 @@ exports.forgotPassword = async (req, res) => {
 
     const resetURL = `http://${req.headers.host}/account/reset/${user.resetPasswordToken}`;
 
-    req.flash('success', 'You have emailed a password reset link ' + resetURL);
+    await mail.send({
+        user,
+        subject: 'Password Reset',
+        resetURL: resetURL,
+        filename: 'password-reset' // will look to render out password-reset.pug
+    });
+
+    req.flash('success', 'You have emailed a password reset link!');
 
     // 4. Redirect them to login page
     res.redirect('/login');
