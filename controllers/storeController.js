@@ -190,3 +190,55 @@ exports.getStoresByTag = async (req, res) => {
     // want to make the tag corresponding highlighted so pass to template
     res.render('tags', {tags, tag, stores, title: 'Tags'});
 };
+
+exports.searchStores = async(req, res) => {
+    // res.json(req.query);
+
+    const stores = await Store
+        // first find stores that match
+        .find({
+                $text: {
+                    $search: req.query.q
+                }
+            },
+        // Use this param to get mongo to project data (add another field)
+        // i.e. adding a meta property to each returned store
+        // which is calculated using the metadata about each store
+            {
+                score: { $meta: 'textScore'} // adds a score to each result
+             })
+        // Want top scoring ones to appear near the top
+        .sort({
+        score: { $meta: 'textScore'}
+    })
+    // limit to only 5 results
+        .limit(5);
+
+    res.json(stores);
+};
+
+exports.mapStores = async (req, res) => {
+    const coordinates = [req.query.lng, req.query.lat].map(parseFloat);
+    const q = {
+        location: {
+            // near operator in MongoDB
+            $near: {
+                $geometry: {
+                    type: 'Point',
+                    coordinates,
+                },
+                $maxDistance: 10000 // 10km
+            }
+        }
+    };
+
+    // Keeping endpoint slim
+    // const stores = await Store.find(q).select('-author -tags');
+    const stores = await Store.find(q).select('slug name description location').limit(10);
+
+    res.json(stores);
+};
+
+exports.mapPage = (req, res) => {
+    res.render('map', { title: 'Map'});
+};

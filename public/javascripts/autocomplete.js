@@ -13,7 +13,6 @@ function autocomplete(input, latInput, lngInput){
 
         latInput.value= place.geometry.location.lat();
         lngInput.value= place.geometry.location.lng();
-
     });
 
     // if someone hits enter on address field do not submit form

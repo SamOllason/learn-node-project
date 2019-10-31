@@ -47,6 +47,15 @@ const storeSchema = new mongoose.Schema({
     }
 });
 
+// Define out indexes
+// compound index
+storeSchema.index({
+    name: 'text', // means we can do things like case sensitivity etc.
+    description: 'text'
+});
+
+storeSchema.index({ location: '2dsphere'});
+
 // Want to auto-generate the slug and hav this saved into our model
 storeSchema.pre('save', async function(next){
     // Use a standard function here as want 'this' to be dynamically scoped
