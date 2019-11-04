@@ -69,6 +69,14 @@ router.post('/account/reset/:token',
 );
 
 router.get('/map', storeController.mapPage);
+router.get('/hearts',
+    // There no link to this page that users can click,
+    // however someone could send a URL to someone else and we want catch against this.
+    // A non-logged in user would see an error as there is no 'user' property on the req to access
+    // and this is as neat way of handling it.
+    authController.isLoggedIn,
+    catchErrors(storeController.getHearts)
+);
 
 /*
     API
@@ -76,5 +84,6 @@ router.get('/map', storeController.mapPage);
 
 router.get('/api/search', catchErrors(storeController.searchStores));
 router.get('/api/stores/near', catchErrors(storeController.mapStores));
+router.post('/api/stores/:id/heart', catchErrors(storeController.heartStore));
 
 module.exports = router;

@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 // models are a singleton, so we can use the reference
 // that hangs off mongoose here
 const Store  = mongoose.model('Store');
+const User  = mongoose.model('User');
 const multer = require('multer');
 const jimp = require('jimp');
 const uuid = require('uuid'); // unique ids for each image uploaded
@@ -241,4 +242,33 @@ exports.mapStores = async (req, res) => {
 
 exports.mapPage = (req, res) => {
     res.render('map', { title: 'Map'});
+};
+
+exports.heartStore = async (req, res) => {
+    // If user has hearted, then un-heart
+    // Mongo will have overwritten the
+    // toString method so it behaves as we expect
+    const hearts = req.user.hearts.map(obj => obj.toString());
+
+    // Check if user has already hearted this store
+    // - pull operator allows us to remove
+    // - push would work but don't get guarantee of uniqueness like with sets
+    const operator = hearts.includes(req.params.id) ? '$pull' : '$addToSet';
+
+    const user = await User
+        .findByIdAndUpdate(req.user._id,
+            { [operator] : { hearts: req.params.id}},
+            { new: true } // return the updated user to us, not prev one
+        );
+    res.json(user);
+};
+
+exports.getHearts = async (req, res)=> {
+    const stores = await Store.find({
+        // Use Mongo operator
+        // 'find stores where the _id property is in the req.user.hearts array
+        _id: { $in: req.user.hearts }
+    });
+
+    res.render('stores', { title: 'Hearted Stores', stores});
 };

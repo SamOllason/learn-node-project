@@ -2849,16 +2849,73 @@ var _map = __webpack_require__(11);
 
 var _map2 = _interopRequireDefault(_map);
 
+var _heart = __webpack_require__(34);
+
+var _heart2 = _interopRequireDefault(_heart);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Looks like jQuery but isn't. Bling makes the syntax easier here.
-(0, _autocomplete2.default)((0, _bling.$)('#address'), (0, _bling.$)('#lat'), (0, _bling.$)('#lng'));
-// This is the entry point for all client-side JS
 
+// This is the entry point for all client-side JS
+(0, _autocomplete2.default)((0, _bling.$)('#address'), (0, _bling.$)('#lat'), (0, _bling.$)('#lng'));
 
 (0, _typeAhead2.default)((0, _bling.$)('.search'));
 
 (0, _map2.default)((0, _bling.$)('#map'));
+
+// is like querying all elements in Bling
+var heartForms = (0, _bling.$$)('form.heart');
+heartForms.on('submit', _heart2.default);
+
+/***/ }),
+/* 33 */,
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _axios = __webpack_require__(3);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _bling = __webpack_require__(2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function ajaxHeart(e) {
+    var _this = this;
+
+    // prevent form from submitting itself
+    e.preventDefault();
+
+    // Intercept let our client-side JavaScript takeover.
+    // The JS effecitively handles the action and then updates the interface 'in-place'
+    _axios2.default.post(this.action).then(function (res) {
+        console.log(res.data);
+        // Accessing the button element in the form as this is a named element.
+        // Either remove or add the hearted class
+        var isHearted = _this.heart.classList.toggle('heart__button--hearted');
+
+        // Use bling to select the heart count and modify here
+        (0, _bling.$)('.heart-count').textContent = res.data.hearts.length;
+
+        // If is hearted then add class for small animation
+        if (isHearted) {
+            _this.heart.classList.add('heart__button--float');
+            setTimeout(function () {
+                return _this.heart.classList.remove('heart__button--float');
+            }, 2500);
+        }
+    }).catch(console.error);
+}
+
+exports.default = ajaxHeart;
 
 /***/ })
 /******/ ]);

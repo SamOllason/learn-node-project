@@ -31,11 +31,19 @@ const userSchema = new Schema({
         required: 'Please supply a name',
         trim: true
     },
-    resetPasswordToken: String,
-    resetPasswordExpires: Date
 
-    // want to store a hash of their password in database,
-    // do this with PassportJS elsewhere in a handler
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+
+    hearts: [
+        // an array of ids for stores
+        { type: mongoose.Schema.ObjectId, ref: 'Store'}
+    ]
+
+
+
+    // Want to store a hash of their password in database,
+    // do this with PassportJS elsewhere in a handler.
 
 });
 
