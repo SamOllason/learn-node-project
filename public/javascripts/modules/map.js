@@ -24,6 +24,7 @@ function loadPlaces(map, lat = 43.2, lng = -79.8) {
             // Create a bounds to make sure the map is zoomed in to the
             // appropriate level.
             const bounds = new google.maps.LatLngBounds();
+            const infoWindow = new google.maps.InfoWindow();
 
             // markers are the red dots on Google maps
             const markers = places.map(place => {
@@ -46,9 +47,32 @@ function loadPlaces(map, lat = 43.2, lng = -79.8) {
                 return marker;
             });
 
+            // when someone clicks on a marker, show details of place
+            markers.forEach(marker => marker.addListener('click', function() {
+                // the HTML here is actually part of the page so we can style with usual CSS
+                // (not using iFrame or anything)
+                const html = `
+                    <div class="popup">
+                        <a href="/store/${this.place.slug}">
+                            <img src="/uploads/${this.place.photo || 'store.png'}" alt="${this.place.name}"/>                   
+                        </a>
+                        <p>${this.place.name} - ${this.place.location.address}</p>
+                    </div>
+                `;
+
+                // addListener is what we need for Google Maps library use
+                // infoWindow.setContent(this.place.name);
+                infoWindow.setContent(html);
+                // Put it on our map, pass it the marker
+                infoWindow.open(map,this);
+            }));
+
             // then zoom the map to fit the maps perfectly using our bounds
             map.setCenter(bounds.getCenter());
             map.fitBounds(bounds);
+
+
+
         });
 }
 
@@ -68,6 +92,11 @@ function makeMap(mapDiv) {
     console.log(input);
 
     const autocomplete = new google.maps.places.Autocomplete(input);
+
+    autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        loadPlaces(map, place.geometry.location.lat(), place.geometry.location.lng());
+    });
 
 }
 

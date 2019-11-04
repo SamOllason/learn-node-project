@@ -232,9 +232,9 @@ exports.mapStores = async (req, res) => {
         }
     };
 
-    // Keeping endpoint slim
+    // Keeping endpoint 'slim'
     // const stores = await Store.find(q).select('-author -tags');
-    const stores = await Store.find(q).select('slug name description location').limit(10);
+    const stores = await Store.find(q).select('slug name description location photo').limit(10);
 
     res.json(stores);
 };

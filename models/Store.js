@@ -47,8 +47,8 @@ const storeSchema = new mongoose.Schema({
     }
 });
 
-// Define out indexes
-// compound index
+// Define out indexes.
+// This is a compound index.
 storeSchema.index({
     name: 'text', // means we can do things like case sensitivity etc.
     description: 'text'
