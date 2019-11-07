@@ -3,6 +3,7 @@ const router = express.Router();
 const storeController = require('../controllers/storeController');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
+const reviewController = require('../controllers/reviewController');
 // Import one method we need using destructing
 const { catchErrors } = require('../handlers/errorHandlers');
 
@@ -76,6 +77,11 @@ router.get('/hearts',
     // and this is as neat way of handling it.
     authController.isLoggedIn,
     catchErrors(storeController.getHearts)
+);
+
+router.post('/reviews/:id',
+    authController.isLoggedIn,
+    catchErrors(reviewController.addReview)
 );
 
 /*

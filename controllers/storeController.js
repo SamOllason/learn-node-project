@@ -245,28 +245,27 @@ exports.mapPage = (req, res) => {
 };
 
 exports.heartStore = async (req, res) => {
-    // If user has hearted, then un-heart
-    // Mongo will have overwritten the
-    // toString method so it behaves as we expect
+    // If user has hearted, then un-heart.
+    // Mongo will have overwritten the toString method so it behaves as we expect
     const hearts = req.user.hearts.map(obj => obj.toString());
 
     // Check if user has already hearted this store
-    // - pull operator allows us to remove
-    // - push would work but don't get guarantee of uniqueness like with sets
+    // - 'pull' operator allows us to remove
+    // - 'push' would work but don't get guarantee of uniqueness like with sets
     const operator = hearts.includes(req.params.id) ? '$pull' : '$addToSet';
 
     const user = await User
         .findByIdAndUpdate(req.user._id,
             { [operator] : { hearts: req.params.id}},
-            { new: true } // return the updated user to us, not prev one
+            { new: true } // return the updated user to us
         );
     res.json(user);
 };
 
 exports.getHearts = async (req, res)=> {
     const stores = await Store.find({
-        // Use Mongo operator
-        // 'find stores where the _id property is in the req.user.hearts array
+        // Use Mongo operator '$in'.
+        // 'find stores where the _id property is in the req.user.hearts array'
         _id: { $in: req.user.hearts }
     });
 

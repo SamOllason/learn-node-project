@@ -14,7 +14,7 @@ typeAhead($('.search'));
 
 makeMap($('#map'));
 
-
-// is like querying all elements in Bling
+// $$ is like querying all elements in Bling.
+// Here we capture the submit event on our hearts form and do some client-side processing
 const heartForms = $$('form.heart');
 heartForms.on('submit', ajaxHeart);
