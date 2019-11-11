@@ -264,7 +264,7 @@ exports.heartStore = async (req, res) => {
     res.json(user);
 };
 
-exports.getHearts = async (req, res)=> {
+exports.getHearts = async (req, res) => {
     const stores = await Store.find({
         // Use Mongo operator '$in'.
         // 'find stores where the _id property is in the req.user.hearts array'
@@ -272,4 +272,10 @@ exports.getHearts = async (req, res)=> {
     });
 
     res.render('stores', { title: 'Hearted Stores', stores});
+};
+
+exports.getTopStores = async (req, res) => {
+    const stores = await Store.getTopStores();
+    res.json(stores);
+    // res.render('topStores', { stores, title: '★ Top Stores!' });
 };

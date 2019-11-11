@@ -110,6 +110,41 @@ storeSchema.statics.getTagsList = function() {
     ])
 };
 
+storeSchema.statics.getTopStores = function() {
+    // 'aggregate' is a query function, kind of like 'find'
+    // method but can do much more complex stuff in there.
+
+    // Notice how we return this here because in our controller
+    // we await the promise that this returns.
+    return this.aggregate([
+        // 1. Look for stores and populate their reviews
+
+        // Note: aggregate query gets passed straight through to mongo
+        // and virtual fields are a mongoose construct, so can't use them here.
+        // Notice: This lookup is kind of like mongoose virtual fields
+        // Note: the 'reviews' comes from mongo: it takes your model name
+        // and adds an 's'
+
+        { $lookup:
+                { from: 'reviews', // where we get the data from (which model)
+                    localField: '_id', foreignField: 'store', // how we link the data across documents
+                    as: 'reviews'} // what we call it
+        },
+
+        // 2. Filter for only items that have 2 or more reviews
+        // 'reviews.1' means accessing the second item in reviews
+        { $match: {'reviews.1': { $exists: true}}}
+
+        // 3. Add average review field
+
+        // 4. Sort it by the new field, highest average reviews first
+
+        // 5. Limit to at most 10
+
+
+    ]);
+};
+
 // Find reviews where stores _id property === review store property
 // Kind of like an SQL join, but virtual as we don't save the relationship
 storeSchema.virtual('reviews', {
