@@ -106,7 +106,9 @@ exports.getStoreBySlug = async (req, res) => {
     // 1. Query the database for a single store.
     // Populating this field means replacing it with the document
     // associated with the author _id.
-    const store = await Store.findOne({ slug: req.params.slug}).populate('author');
+    const store = await Store.findOne({ slug: req.params.slug}).populate('author')
+    // create virtual fields to populate for author and for reviews too
+    .populate('author reviews');
 
     // This is all we need to do to render a 404 page because of the error-handling middleware
     if(!store) {
@@ -116,7 +118,7 @@ exports.getStoreBySlug = async (req, res) => {
 
     // res.json(store);
 
-    // Render a teomplate
+    // Render a template
     res.render('store', { title: 'Stores', store: store});
 };
 

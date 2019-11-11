@@ -1,6 +1,7 @@
 extends layout
 
 include mixins/_reviewForm
+include mixins/_review
 
 block content
     //h2 #{store.name}
@@ -26,3 +27,9 @@ block content
 
         if user
             +reviewForm(store)
+
+        if store.reviews
+            .reviews
+                each r in store.reviews
+                    .review
+                        +review(r)

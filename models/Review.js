@@ -27,4 +27,13 @@ const reviewSchema = mongoose.Schema({
     }
 });
 
+function autopopulate(next){
+    this.populate('author'); // replace id of author with their name
+    next();
+}
+
+// add hooks for whenever anyone wants to access these methods
+reviewSchema.pre('find', autopopulate);
+reviewSchema.pre('findOne', autopopulate);
+
 module.exports = mongoose.model('Review', reviewSchema);

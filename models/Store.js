@@ -45,7 +45,13 @@ const storeSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'User'
     }
-});
+}, {
+    // make sure to persist virtual fields whenever we use a snapshot of a
+    // store variable in code
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true}
+    }
+);
 
 // Define out indexes.
 // This is a compound index.
@@ -102,10 +108,20 @@ storeSchema.statics.getTagsList = function() {
         // Sort by count descending
         { $sort: { count: -1}}
     ])
-
 };
+
+// Find reviews where stores _id property === review store property
+// Kind of like an SQL join, but virtual as we don't save the relationship
+storeSchema.virtual('reviews', {
+    ref: 'Review',
+    // '(local) which field on our store needs to match
+    // up with which field on our review (foreign)?'
+    localField: '_id', // which field on the store
+    foreignField: 'store' // which field on review
+});
+
 // If the main thing in a file is going to be exporting
 // put it on module name.
-// A question of whether importing a function or an object with loads
+// It's question of whether importing a function or an object with loads
 // of properties on it.
 module.exports = mongoose.model('Store', storeSchema);
