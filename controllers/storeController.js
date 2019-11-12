@@ -95,11 +95,43 @@ exports.createStore = async (req, res) => {
 exports.getStores = async (req, res) => {
     // 1. Query the database for list of all stores
 
-    const stores = await Store.find();
+
+    // If we are on homepage can't get this from URL
+    const page = req.params.page || 1;
+
+    const limit = 4;
+
+    // if we are on page 2 then we want to skip 4, as we will show stores 5,6,7,8.
+    const skip = (page * limit) - limit;
+
+    const storesPromise = await Store
+        .find()
+        .skip(skip)
+        .limit(limit)
+        .sort({ created: 'desc'}); // show latest store created to user
+
+    // promise to get number of stores in our db
+    const countPromise = Store.count();
+
+    // fire off both requests at the same time and wait for both to come back
+    const [stores, count] = await Promise.all([storesPromise, countPromise]);
+
+    // if 17 stores then need 5 pages (with a limit of 4)
+    const pages = Math.ceil(count / limit);
+
+    // If user tries to access URL for page 100 when there are only e..g 20 stores then
+    // show them a message.
+    // Remember, 'pages' refers to the last page populated with stores
+    if(!stores.length && skip) {
+        req.flash('info', `Hey! You asked for page ${page}. But that doesn't exist, so I put you on page ${pages}`);
+        res.redirect(`/stores/page/${pages}`);
+        return;
+    }
+
     // console.log({stores});
 
     // 2. Pass stores to template
-    res.render('stores', { title: 'Stores', stores: stores});
+    res.render('stores', { title: 'Stores', stores, page, pages, count});
 };
 
 exports.getStoreBySlug = async (req, res) => {
@@ -276,6 +308,6 @@ exports.getHearts = async (req, res) => {
 
 exports.getTopStores = async (req, res) => {
     const stores = await Store.getTopStores();
-    res.json(stores);
-    // res.render('topStores', { stores, title: '★ Top Stores!' });
+    // res.json(stores);
+    res.render('topStores', { stores, title: '★ Top Stores!' });
 };

@@ -132,16 +132,28 @@ storeSchema.statics.getTopStores = function() {
         },
 
         // 2. Filter for only items that have 2 or more reviews
-        // 'reviews.1' means accessing the second item in reviews
-        { $match: {'reviews.1': { $exists: true}}}
+        // 'reviews.1' syntax for accessing index-based things in Mongo
+        // here we are accessing the second item in reviews
+        { $match: {'reviews.1': { $exists: true } }},
 
         // 3. Add average review field
+        // 'project' allows us to add a new field
+        // '$' by reviews means use the field that s being piped in from prev operator (match)
+        { $project: {
+            averageRating: { $avg: '$reviews.rating'},
+
+            // have to also explicitly add back in fields here that we want
+                photo: '$$ROOT.photo',
+                name: '$$ROOT.name',
+                reviews: '$$ROOT.reviews',
+                slug: '$$ROOT.slug'
+        }},
 
         // 4. Sort it by the new field, highest average reviews first
+        { $sort: { averageRating: -1} },
 
         // 5. Limit to at most 10
-
-
+        { $limit: 10 }
     ]);
 };
 
@@ -154,6 +166,15 @@ storeSchema.virtual('reviews', {
     localField: '_id', // which field on the store
     foreignField: 'store' // which field on review
 });
+
+function autopopulate(next){
+    this.populate('reviews');
+    next();
+}
+
+// Whenever we query a store populate the reviews for that store
+storeSchema.pre('find', autopopulate);
+storeSchema.pre('findOne', autopopulate);
 
 // If the main thing in a file is going to be exporting
 // put it on module name.
