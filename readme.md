@@ -1,29 +1,16 @@
 ## Overview
-Restaurant locator and reviewing site called "Now that's delicious!".
-Built using Node, Express, MongoDB and Pug.
+Restaurant locator and reviewing site called "Now that's delicious!". 
 
-Homework from Wes Bos' fantastic [Learn Node](https://learnnode.com) course.
+A fun Full Stack JavaScript side project exploring Node, Express, MongoDB and Pug. Hosted using Heroku.
 
-## Sample Data
+Users can:
+* Upload information and create a page for a restaurant
+* Create an account, login/logout, reset their password
+* Search for restaurants by location, by category and by name/description
+* Review stores and maintain a list of 'hearted' stores
+* Explore the highest-rated stores
+* And lots more!
 
-To load sample data, run the following command in your terminal:
+Homework project from Wes Bos' fantastic [Learn Node](https://learnnode.com) course.
 
-```bash
-npm run sample
-```
-
-If you have previously loaded in this data, you can wipe your database 100% clean with:
-
-```bash
-npm run blowitallaway
-```
-
-That will populate 16 stores with 3 authors and 41 reviews. The logins for the authors are as follows:
-
-|Name|Email (login)|Password|
-|---|---|---|
-|Wes Bos|wes@example.com|wes|
-|Debbie Downer|debbie@example.com|debbie|
-|Beau|beau@example.com|beau|
-
-
+Enjoy the finished project [here](https://dang-thats-delicious-99.herokuapp.com/store/mulberry-coffee).

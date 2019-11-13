@@ -131,5 +131,4 @@ exports.updatePassword = async (req, res, next) => {
     // Can use this method from the PassportJS middleware we introduced and set up
     await req.login(updatedUser);
     req.flash('success', 'Nice! Your password has been reset! You are now logged in!');
-
 };
