@@ -13,4 +13,4 @@ Users can:
 
 Homework project from Wes Bos' fantastic [Learn Node](https://learnnode.com) course.
 
-Enjoy the finished project [here](https://dang-thats-delicious-99.herokuapp.com/store/mulberry-coffee).
+Enjoy the finished project [here](https://dang-thats-delicious-99.herokuapp.com/).
